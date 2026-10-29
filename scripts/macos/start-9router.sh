@@ -7,8 +7,8 @@ REPO="$(cd "$(dirname "$0")/../.." && pwd)"
 PORT="${PORT:-20128}"
 BIND_HOST="${NINEROUTER_HOST:-127.0.0.1}"
 
-# launchd starts with a bare PATH; add the user's Node and Homebrew.
-export PATH="$HOME/.local/share/node/node-v26.12.1-darwin-arm64/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:$PATH"
+# launchd starts with a bare PATH; add the user's Node, CLI tools (pi, etc.) and Homebrew.
+export PATH="$HOME/.local/share/node/node-v26.12.1-darwin-arm64/bin:$HOME/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:$PATH"
 export NODE_ENV=production
 export NEXT_PUBLIC_BASE_URL="http://localhost:$PORT"
 export PORT
