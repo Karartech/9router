@@ -155,7 +155,7 @@ for (let i = 0; i < args.length; i++) {
     process.env.TRAY_MODE = "1";
   } else if (args[i] === "--help" || args[i] === "-h") {
     console.log(`
-Usage: ${APP_NAME} [options]
+Usage: 9router [options]
 
 Options:
   -p, --port <port>   Port to run the server (default: ${DEFAULT_PORT})
@@ -169,12 +169,12 @@ Options:
 
 Commands:
   connect <server-url> Configure Claude Code for a remote 9router server
-                      (npx 9router connect http://host:20128 — no install needed)
+                      (npx @karartech/9router connect http://host:20128 — no install needed)
   show [tool…]        Show each CLI tool's current 9router config and models
                       (e.g. 9router show claude)
   xai video --prompt "..." --output video.mp4
                       Generate a Grok Imagine video via the running gateway
-                      (see: ${APP_NAME} xai video --help)
+                      (see: 9router xai video --help)
 `);
     process.exit(0);
   } else if (args[i] === "--version" || args[i] === "-v") {

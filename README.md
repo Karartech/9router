@@ -1,25 +1,35 @@
 <div align="center">
   <img src="./images/9router.png?1" alt="9Router Dashboard" width="800"/>
-  
-  # 9Router - FREE AI Router & Token Saver
-  
-  **Never stop coding. Save 20-40% tokens with RTK + auto-fallback to FREE & cheap AI models.**
-  
-  **Connect All AI Code Tools (Claude Code, Cursor, Antigravity, Copilot, Codex, Gemini, OpenCode, Cline, OpenClaw...) to 40+ AI Providers & 100+ Models.**
-  
-  [![npm](https://img.shields.io/npm/v/9router.svg)](https://www.npmjs.com/package/9router)
-  [![Downloads](https://img.shields.io/npm/dm/9router.svg)](https://www.npmjs.com/package/9router)
-  [![Docker Pulls](https://img.shields.io/docker/pulls/decolua/9router.svg?logo=docker&label=Docker%20pulls)](https://hub.docker.com/r/decolua/9router)
-  [![GHCR](https://img.shields.io/badge/GHCR-decolua%2F9router-blue?logo=github)](https://github.com/decolua/9router/pkgs/container/9router)
-  [![License](https://img.shields.io/npm/l/9router.svg)](https://github.com/decolua/9router/blob/main/LICENSE)
 
-<a href="https://trendshift.io/repositories/22628" target="_blank"><img src="https://trendshift.io/api/badge/repositories/22628" alt="decolua%2F9router | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
+  # 9Router — Karartech Edition
 
-[🚀 Quick Start](#-quick-start) • [💡 Features](#-key-features) • [📖 Setup](#-setup-guide) • [🌐 Website](https://9router.com)
+  **A maintained fork of [decolua/9router](https://github.com/decolua/9router): the free local AI router and token saver, with longer prompt caching, modern MITM certificates and a macOS auto-start.**
 
-[🇧🇷 Português (Brasil)](./i18n/README.pt-BR.md) • [🇻🇳 Tiếng Việt](./i18n/README.vi.md) • [🇨🇳 中文](./i18n/README.zh-CN.md) • [🇯🇵 日本語](./i18n/README.ja-JP.md) • [🇷🇺 Русский](./i18n/README.ru.md) • [🇹🇭 ไทย](./i18n/README.th.md) • [🇮🇷 فارسی](./i18n/README.fa_IR.md) • [🇮🇩 Indonesia](./i18n/README.id-ID.md) • [🇪🇸 Español](./i18n/README.es.md) • [🇫🇷 Français](./i18n/README.fr.md)
+  **Connect all AI code tools (Claude Code, Cursor, Codex, Pi, OpenCode, Cline, OpenClaw...) to 40+ AI providers and 100+ models through one endpoint.**
+
+  [![npm](https://img.shields.io/npm/v/@karartech/9router.svg)](https://www.npmjs.com/package/@karartech/9router)
+  [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/Karartech/9router/blob/master/LICENSE)
+  [![Upstream](https://img.shields.io/badge/upstream-decolua%2F9router-orange?logo=github)](https://github.com/decolua/9router)
+
+[🚀 Quick Start](#-quick-start) • [✨ What's different](#-whats-different-in-the-karartech-edition) • [💡 Features](#-key-features) • [📖 Setup](#-setup-guide)
 
 </div>
+
+---
+
+## ✨ What's different in the Karartech Edition
+
+This edition tracks upstream 9Router closely (it is regularly merged with `decolua/9router`) and adds:
+
+| Change | What it means for you |
+| --- | --- |
+| **1-hour Claude prompt caching** | Every cache breakpoint 9Router places on Claude requests (system, tools, last assistant turn, final tool results) uses Anthropic's 1-hour cache (`ttl: "1h"`) instead of the 5-minute default. Pauses longer than 5 minutes no longer throw away your cache, so long agent sessions re-read cached context instead of paying full input price again. |
+| **24-hour session stickiness** | In-memory session state (sticky routing, continuations, Kiro replay) lives for 24 hours instead of 2. Override with `SESSION_TTL_MS`. |
+| **Modern MITM certificates** | The HTTPS-interception root CA and leaf certificates are generated with [`selfsigned`](https://www.npmjs.com/package/selfsigned) (WebCrypto / PKI.js) instead of the unmaintained `node-forge`. |
+| **macOS start-at-login** | [`scripts/macos/start-9router.sh`](scripts/macos/start-9router.sh) runs your checkout as a login agent: it rebuilds only when the code changed, binds to `127.0.0.1` only, and finds CLI tools such as Pi in `~/.local/bin`. See [Run at login on macOS](#-run-at-login-on-macos). |
+| **Own npm package and updater** | Installs as `@karartech/9router`. The built-in updater, changelog and skills links point at this fork, so updating never swaps you back to upstream. |
+
+Everything else — providers, combos, RTK/Headroom token savers, dashboard — is upstream 9Router. Credit for the project goes to [decolua](https://github.com/decolua) and the [9Router contributors](https://github.com/decolua/9router/graphs/contributors).
 
 ---
 
@@ -76,9 +86,11 @@ Result: Never stop coding, minimal cost + 20-40% token savings via RTK
 **1. Install globally:**
 
 ```bash
-npm install -g 9router
+npm install -g @karartech/9router
 9router
 ```
+
+> The command is still `9router`. If you have upstream `9router` installed, uninstall it first (`npm uninstall -g 9router`) — both provide the same command.
 
 🎉 Dashboard opens at `http://localhost:20128`
 
@@ -99,9 +111,9 @@ Claude Code/Codex/OpenClaw/Cursor/Cline Settings:
 
 **Alternative: run from source (this repository):**
 
-This repository package is private (`9router-app`), so source/Docker execution is the expected local development path.
-
 ```bash
+git clone https://github.com/Karartech/9router.git
+cd 9router
 cp .env.example .env
 npm install
 PORT=20128 NEXT_PUBLIC_BASE_URL=http://localhost:20128 npm run dev
@@ -133,6 +145,16 @@ Default URLs:
 
 - Dashboard: `http://localhost:20128/dashboard`
 - OpenAI-compatible API: `http://localhost:20128/v1`
+
+### 🍎 Run at login on macOS
+
+Run your own checkout (with any local changes) automatically whenever you log in:
+
+1. Edit the `PATH` line in [`scripts/macos/start-9router.sh`](scripts/macos/start-9router.sh) if your Node lives somewhere other than `~/.local/share/node/...`.
+2. Create `~/Library/LaunchAgents/com.9router.local.plist` that runs `/bin/zsh /path/to/9router/scripts/macos/start-9router.sh`, with `RunAtLoad` set to `true`, `KeepAlive` → `SuccessfulExit` set to `false`, and stdout/stderr pointed at `~/.9router/logs/autostart.log`.
+3. Load it: `launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.9router.local.plist`
+
+The script installs dependencies when `package-lock.json` changes, rebuilds when the checked-out commit (or uncommitted source) changes, and serves the standalone build on `127.0.0.1:20128`. Set `NINEROUTER_HOST=0.0.0.0` only if other machines must reach it, and change `INITIAL_PASSWORD` first. After pulling new code, restart it with `launchctl kickstart -k gui/$(id -u)/com.9router.local`.
 
 ---
 
@@ -245,7 +267,7 @@ Default URLs:
 
 </div>
 
-> 🎬 **Made a video about 9Router?** Submit a [Pull Request](https://github.com/decolua/9router/pulls) adding your video to this section — we'll merge it!
+> 🎬 **Made a video about 9Router?** Submit a [Pull Request](https://github.com/decolua/9router/pulls) to upstream adding your video to this section — we'll merge it!
 
 ---
 
@@ -1249,7 +1271,7 @@ Model: cc/claude-opus-4-7
 
 ```bash
 # Clone and install
-git clone https://github.com/decolua/9router.git
+git clone https://github.com/Karartech/9router.git
 cd 9router
 npm install
 npm run build
@@ -1278,12 +1300,14 @@ pm2 startup
 
 ### Docker
 
-Published images (multi-platform `linux/amd64` + `linux/arm64`):
+> The Karartech Edition does not publish its own Docker image yet. The published images below are **upstream** 9Router and do not include this edition's changes — use **Build from source** to get them.
+
+Upstream images (multi-platform `linux/amd64` + `linux/arm64`):
 
 - Docker Hub: [`decolua/9router`](https://hub.docker.com/r/decolua/9router)
 - GHCR: [`ghcr.io/decolua/9router`](https://github.com/decolua/9router/pkgs/container/9router)
 
-**Quick start (use published image):**
+**Quick start (upstream image):**
 
 ```bash
 docker run -d \
@@ -1299,8 +1323,8 @@ docker run -d \
 **Build from source (dev):**
 
 ```bash
-git clone https://github.com/decolua/9router.git
-cd 9router/app
+git clone https://github.com/Karartech/9router.git
+cd 9router
 docker build -t 9router .
 docker run -d --name 9router -p 20128:20128 \
   -v "$HOME/.9router:/app/data" -e DATA_DIR=/app/data 9router
@@ -1329,6 +1353,7 @@ docker pull decolua/9router:latest   # update to latest
 | `JWT_SECRET`                                         | Auto-generated (`~/.9router/jwt-secret`) | JWT signing secret for dashboard auth cookie (override to share across instances)   |
 | `INITIAL_PASSWORD`                                   | `123456`                                 | First login password when no saved hash exists                                      |
 | `DATA_DIR`                                           | `~/.9router`                             | Main app data location (SQLite at `$DATA_DIR/db/data.sqlite`)                       |
+| `SESSION_TTL_MS`                                     | `86400000` (24h)                         | How long in-memory session state (sticky routing, continuations, Kiro replay) lives |
 | `PORT`                                               | framework default                        | Service port (`20128` in examples)                                                  |
 | `HOSTNAME`                                           | framework default                        | Bind host (Docker defaults to `0.0.0.0`)                                            |
 | `NODE_ENV`                                           | runtime default                          | Set `production` for deploy                                                         |
@@ -1518,15 +1543,14 @@ Authorization: Bearer your-api-key
 
 ## 📧 Support
 
-- **Website**: [9router.com](https://9router.com)
-- **GitHub**: [github.com/decolua/9router](https://github.com/decolua/9router)
-- **Issues**: [github.com/decolua/9router/issues](https://github.com/decolua/9router/issues)
+- **This edition**: [github.com/Karartech/9router](https://github.com/Karartech/9router) — [issues](https://github.com/Karartech/9router/issues) for anything specific to the Karartech Edition
+- **Upstream 9Router**: [github.com/decolua/9router](https://github.com/decolua/9router) · [9router.com](https://9router.com)
 
 ---
 
 ## 👥 Contributors
 
-Thanks to all contributors who helped make 9Router better!
+Thanks to all upstream contributors who built 9Router!
 
 [![Contributors](https://contrib.rocks/image?repo=decolua/9router&max=150&columns=15&anon=1&v=20260309)](https://github.com/decolua/9router/graphs/contributors)
 
@@ -1557,7 +1581,7 @@ Huge thanks to these authors — without their work, 9Router's token-saving feat
 
 ## 📄 License
 
-MIT License - see [LICENSE](LICENSE) for details.
+MIT License - see [LICENSE](LICENSE) for details. Original work © decolua and contributors; Karartech Edition changes are released under the same license.
 
 ---
 

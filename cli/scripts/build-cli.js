@@ -210,6 +210,10 @@ function buildCliPackage() {
   }
   console.log("✅ Copied standalone build\n");
 
+  // File tracing pulls the build-time HOME (jwt-secret, machine-id, sqlite db created while
+  // prerendering) into the standalone copy. Never ship it — runtime uses the user's own HOME.
+  fs.rmSync(path.join(cliAppDir, "cli", ".build-home"), { recursive: true, force: true });
+
   // Step 3a: Copy custom server (injects real socket IP, strips spoofable XFF).
   const customServerSrc = path.join(appDir, "custom-server.js");
   if (fs.existsSync(customServerSrc)) {

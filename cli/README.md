@@ -1,18 +1,26 @@
-# 9Router - FREE AI Router & Token Saver
+# 9Router — Karartech Edition
 
-**Never stop coding. Save 20-40% tokens with RTK + auto-fallback to FREE & cheap AI models.**
+**A maintained fork of [decolua/9router](https://github.com/decolua/9router): the free local AI router and token saver, with 1-hour Claude prompt caching, modern MITM certificates and a macOS auto-start.**
 
-**Connect All AI Code Tools (Claude Code, Cursor, Antigravity, Copilot, Codex, Gemini, OpenCode, Cline, OpenClaw...) to 40+ AI Providers & 100+ Models.**
+**Connect all AI code tools (Claude Code, Cursor, Codex, Pi, OpenCode, Cline, OpenClaw...) to 40+ AI providers and 100+ models.**
 
-[![npm](https://img.shields.io/npm/v/9router.svg)](https://www.npmjs.com/package/9router)
-[![Downloads](https://img.shields.io/npm/dm/9router.svg)](https://www.npmjs.com/package/9router)
-[![Docker Pulls](https://img.shields.io/docker/pulls/decolua/9router.svg?logo=docker&label=Docker%20pulls)](https://hub.docker.com/r/decolua/9router)
-[![GHCR](https://img.shields.io/badge/GHCR-decolua%2F9router-blue?logo=github)](https://github.com/decolua/9router/pkgs/container/9router)
-[![License](https://img.shields.io/npm/l/9router.svg)](https://github.com/decolua/9router/blob/main/LICENSE)
+[![npm](https://img.shields.io/npm/v/@karartech/9router.svg)](https://www.npmjs.com/package/@karartech/9router)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/Karartech/9router/blob/master/LICENSE)
+[![Upstream](https://img.shields.io/badge/upstream-decolua%2F9router-orange?logo=github)](https://github.com/decolua/9router)
 
-<a href="https://trendshift.io/repositories/22628" target="_blank"><img src="https://trendshift.io/api/badge/repositories/22628" alt="decolua%2F9router | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
+[📖 Full Docs](https://github.com/Karartech/9router#readme) • [Upstream 9Router](https://github.com/decolua/9router)
 
-[🌐 Website](https://9router.com) • [📖 Full Docs](https://github.com/decolua/9router)
+---
+
+## ✨ What's different from upstream
+
+- **1-hour Claude prompt caching** — every cache breakpoint 9Router adds to Claude requests uses `ttl: "1h"` instead of the 5-minute default, so pauses no longer throw away your cache.
+- **24-hour session stickiness** — sticky routing and continuations last 24h (override with `SESSION_TTL_MS`).
+- **Modern MITM certificates** — generated with `selfsigned` (WebCrypto / PKI.js) instead of `node-forge`.
+- **macOS start-at-login script** for running a source checkout (see the [full README](https://github.com/Karartech/9router#-run-at-login-on-macos)).
+- **Own updater** — updates come from `@karartech/9router`, never back to upstream.
+
+Everything else is upstream 9Router, merged regularly. Credit to [decolua](https://github.com/decolua) and the 9Router contributors.
 
 ---
 
@@ -40,14 +48,16 @@
 **Option 1 — npm (recommended for desktop):**
 
 ```bash
-npm install -g 9router
+npm install -g @karartech/9router
 9router
 
 # Or run directly with npx
-npx 9router
+npx @karartech/9router
 ```
 
-**Option 2 — Docker (server/VPS):**
+> The command is still `9router`. If upstream `9router` is installed, remove it first: `npm uninstall -g 9router`.
+
+**Option 2 — Docker (server/VPS, upstream image — does not include this edition's changes):**
 
 ```bash
 docker run -d --name 9router -p 20128:20128 \
@@ -95,9 +105,9 @@ That's it! Start coding with FREE AI models.
 Already running 9Router on another machine (e.g. a team server on your LAN)? Point this machine's CLI tools at it — no local server is started:
 
 ```bash
-npx 9router connect http://<server-host>:20128                       # pick tools interactively
-npx 9router connect http://<server-host>:20128 --tools claude,codex  # or choose up front
-npx 9router connect --reset --tools claude,codex                     # undo
+npx @karartech/9router connect http://<server-host>:20128                       # pick tools interactively
+npx @karartech/9router connect http://<server-host>:20128 --tools claude,codex  # or choose up front
+npx @karartech/9router connect --reset --tools claude,codex                     # undo
 ```
 
 It logs in with the dashboard password (hidden prompt), reuses or creates an API key named `cli-<hostname>`, and writes each tool's config (backing up the original once as `*.bak-9router`).
@@ -119,22 +129,22 @@ Models come from the **server's own CLI-tools configuration**, so a client gets 
 
 ```bash
 # One Claude tier; the other tiers still come from the server
-npx 9router connect http://<server-host>:20128 --tools claude --sonnet cc/claude-sonnet-5-5
+npx @karartech/9router connect http://<server-host>:20128 --tools claude --sonnet cc/claude-sonnet-5-5
 
 # Every Claude tier
-npx 9router connect http://<server-host>:20128 --tools claude \
+npx @karartech/9router connect http://<server-host>:20128 --tools claude \
   --fable cc/claude-fable-5-1 --opus cc/claude-opus-5-5 \
   --sonnet cc/claude-sonnet-5-5 --haiku cc/claude-haiku-4-5-20251001
 
 # All non-Claude tools at once
-npx 9router connect http://<server-host>:20128 --tools codex,opencode,kilo --model ocg/deepseek-flash
+npx @karartech/9router connect http://<server-host>:20128 --tools codex,opencode,kilo --model ocg/deepseek-flash
 
 # Claude and other tools in one run
-npx 9router connect http://<server-host>:20128 --tools claude,codex --opus cc/claude-opus-5-5 --model gpt-6
+npx @karartech/9router connect http://<server-host>:20128 --tools claude,codex --opus cc/claude-opus-5-5 --model gpt-6
 
 # A different model per tool: --model covers every non-Claude tool in a run, so run once per tool
-npx 9router connect http://<server-host>:20128 --tools codex --model gpt-6
-npx 9router connect http://<server-host>:20128 --tools opencode --model ocg/glm-5.3
+npx @karartech/9router connect http://<server-host>:20128 --tools codex --model gpt-6
+npx @karartech/9router connect http://<server-host>:20128 --tools opencode --model ocg/glm-5.3
 ```
 
 A model the server doesn't list is still written, with a `not listed by server` warning. To see the ids it serves: `curl http://<server-host>:20128/v1/models -H "Authorization: Bearer <your key>"`.
@@ -144,10 +154,10 @@ A model the server doesn't list is still written, with a `not listed by server` 
 `9router show` prints what each CLI tool on this machine is currently set to — base URL, masked API key and models. It only reads local files and never contacts a server.
 
 ```bash
-npx 9router show                 # every supported tool
-npx 9router show claude          # one tool
-npx 9router show claude codex    # several
-npx 9router show claude --json   # machine-readable (key still masked)
+npx @karartech/9router show                 # every supported tool
+npx @karartech/9router show claude          # one tool
+npx @karartech/9router show claude codex    # several
+npx @karartech/9router show claude --json   # machine-readable (key still masked)
 ```
 
 ```
@@ -200,9 +210,9 @@ Any tool supporting OpenAI/Claude-compatible API works.
 
 Full docs, advanced setup, video tutorials & development guide:
 
-- **GitHub**: https://github.com/decolua/9router
-- **Full README**: https://github.com/decolua/9router/blob/master/README.md
-- **Website**: https://9router.com
+- **This edition**: https://github.com/Karartech/9router
+- **Full README**: https://github.com/Karartech/9router/blob/master/README.md
+- **Upstream 9Router**: https://github.com/decolua/9router · https://9router.com
 
 ---
 
@@ -212,4 +222,4 @@ Full docs, advanced setup, video tutorials & development guide:
 
 ## 📄 License
 
-MIT License - see [LICENSE](LICENSE) for details.
+MIT License - see [LICENSE](LICENSE) for details. Original work © decolua and contributors.

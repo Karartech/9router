@@ -1,3 +1,14 @@
+# Karartech Edition — v0.5.112 (2026-11-05)
+
+First release of the Karartech Edition as `@karartech/9router`, based on upstream v0.5.112.
+
+## Changes from upstream
+- **Claude prompt cache**: every breakpoint 9Router places (system, tools, last assistant turn, final tool results, OpenAI→Claude translation) uses the 1-hour cache (`ttl: "1h"`) instead of the 5-minute default
+- **Sessions**: in-memory session state lasts 24h by default (was 2h), configurable with `SESSION_TTL_MS`
+- **MITM**: root CA and leaf certificates are generated with `selfsigned` (WebCrypto / PKI.js) instead of `node-forge`; Docker image copies the new runtime deps
+- **macOS**: `scripts/macos/start-9router.sh` runs a source checkout as a login agent — rebuilds on new commits, binds to `127.0.0.1`, and puts `~/.local/bin` on PATH so CLI tools like Pi are detected
+- **Packaging**: published as `@karartech/9router`; the updater, changelog, skills and landing-page links point at `Karartech/9router`
+
 # v0.5.112 (2026-10-28)
 
 ## Features
